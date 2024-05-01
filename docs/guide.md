@@ -14,7 +14,7 @@ docker: Error response from daemon: Conflict. The container name "/my-postgres" 
 See 'docker run --help'.
 ```
 
-You can remove the container by doing ```$ docker rm -f my-postgres```.
+In that case you can start the container by doing ```$ docker start my-postgres```. Alternatively you can remove the container by doing ```$ docker rm -f my-postgres```. 
 
 ## Verify whether the container is up and running
 
@@ -24,7 +24,7 @@ $ docker ps
 $
 ```
 
-If you see the output something like above then congrats! Else you can start the container by doing ```$ docker start my-postgres```.
+If you see the output something like above then congrats!
 
 ## Creating the database
 
@@ -61,17 +61,4 @@ postgres=# \l
 postgres=# CREATE DATABASE group_contacts;
 CREATE DATABASE
 ```
-
-Done . 
-
-## Files overview
-- `postgrsql.py`: Main database file, supports `create_table`, `drop_table`, `insert_into`, you can add custom query based functions based upon your needs.
-
-- `db_controller.py`: The controller for our work, responsible for reading CSV file from file system, decompose columns into 3 specified tables. `segments`, `organizations`, `contacts` & finally insert the data into each of these tables.
-
-
-## Inserting data
-- Make sure the input does not contain any duplicates
-- run `$ python3 db_controller.py` this will conncet to the db, create tables and upload the data
-
-
+At this point you can head over to the main.py to start the csv to database migration process. 
