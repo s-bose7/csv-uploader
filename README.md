@@ -1,6 +1,6 @@
 # Database Schema
 
-For detail schema [see here.](https://raw.githubusercontent.com/s-bose7/csv-uploader/master/docs/schema.md) To get a  guide on how to start the database container [see here.](https://raw.githubusercontent.com/s-bose7/csv-uploader/master/docs/guide.md)
+For detail schema [see here.](docs/schema.md) To get a  guide on how to start the database container [see here.](docs/guide.md)
 
 ![Alt Text](https://raw.githubusercontent.com/s-bose7/csv-uploader/master/docs/database_schema.png)
 
