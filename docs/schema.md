@@ -2,66 +2,86 @@
 
 ## Tables
 
-### Organization
-- organization_id (string, PK)
-- name (string)
-- created_at (timestamp)
-- updated_at (timestamp)
-- address (string)
-- dma (number)
-- latitude (number)
-- longitude (number)
-- city (string)
-- state (string)
-- zip (string)
-- slug (string)
+### Organizations
+- id (SERIAL, PK) # Autoincrementing integer
+- segment_id (INTEGER, FK > Segments.id)
+- name (VARCHAR)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+- street_address (VARCHAR)
+- geom (GEOMETRY) # PostgreSQL geometry data type for spatial data
+- latitude (FLOAT)
+- longitude (FLOAT)
+- city (VARCHAR)
+- state (VARCHAR)
+- zip (VARCHAR)
+- slug (VARCHAR)
+- custom_fields (JSONB) # PostgreSQL JSON data type
+- irs_ein (VARCHAR)
+- irs_ntee_code (VARCHAR)
+- school_grade (VARCHAR)
+- fall_start_date (DATE) # Use DATE for date without time
+- winter_start_date (DATE)
 
-### Agent
-- agent_id (string, PK)
-- agent_rank (number)
-- should_schedule (boolean)
-- segment_name (string, FK > Segments.segment_name)
-- organization_id (string, FK > Organizations.organization_id)
+### Agents
+- id (SERIAL, PK)
+- rank (INTEGER)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+- club_id (INTEGER, FK > Clubs.id)
+- contact_id (INTEGER, FK > Contacts.id)
+- segment_id (INTEGER, FK > Segments.id)
+- organization_id (INTEGER, FK > Organizations.id)
 
-### Segment
-- segment_name (string, PK)
-- created_at (timestamp)
+### Segments
+- id (SERIAL, PK)
+- name (VARCHAR)
+- created_at (TIMESTAMP)
 
-### Contact
-- email (string, PK)
-- created_at (timestamp)
-- updated_at (timestamp)
-- agent_id (string, FK > Agents.agent_id)
-- source (string)
-- state (boolean)
-- unresponsive_at (timestamp)
-- is_marketable (boolean)
-- hatchbuck_updated_at (timestamp)
-- unmarkatable_message (string)
+### Contacts
+- id (SERIAL, PK)
+- email (VARCHAR)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+- custom_fields (JSONB)
+- source (VARCHAR)
+- first_name (VARCHAR)
+- position (VARCHAR)
+- organization_id (INTEGER, FK > Organizations.id)
+- agent_id (INTEGER, FK > Agents.id)
+- club_id (INTEGER, FK > Clubs.id)
 
-### Club
-- club_id (string, PK)
-- clud_name (string)
-- organization_id (string, FK > Organizations.organization_id)
-- segment_name (string)
+### Clubs
+- id (SERIAL, PK)
+- name (VARCHAR)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+- organization_id (INTEGER, FK > Organizations.id)
 
 ## Relationships
 
-### Organization
+### Organizations
+- One organization can belong to one segment (N to 1)
 - One organization can have many agents (1 to N)
+- One organization can have many contacts (1 to N)
 - One organization can have many clubs (1 to N)
 
-### Agent
+### Agents
 - One agent belongs to one organization (N to 1)
-- One agent can have many contacts (1 to N)
 - One agent belongs to one segment (N to 1)
+- One agent belongs to one club (N to 1)
+- One agent belongs to one contact (N to 1)
+- One agent can have many contacts (1 to N)
 
-### Segment
+### Segments
+- One segment can have many organizations (1 to N)
 - One segment can have many agents (1 to N)
-- One segment can have many clubs (1 to N)
 
-### Contact
+### Contacts
+- One contact belongs to one organization (N to 1)
 - One contact belongs to one agent (N to 1)
+- One contact can belong to one club (N to 1)
 
-### Club
+### Clubs
 - One club belongs to one organization (N to 1)
+- One club can have many agents (1 to N)

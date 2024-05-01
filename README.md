@@ -1,3 +1,9 @@
+
+# Database Schema
+![Alt Text](https://raw.githubusercontent.com/s-bose7/csv-uploader/master/docs/database_schema.png)
+
+
+
 # Creating and upgrading a new migration
 
 ### Create a new migration file for a new database schema:
