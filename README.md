@@ -1,9 +1,8 @@
 # Database Schema
 
-For detail schema [see here.](docs/schema.md) To get a  guide on how to start the database container [see here.](docs/guide.md)
+For a detail schema [see here.](docs/schema.md) To get a  guide on how to start the database container [see here.](docs/guide.md)
 
-![Alt Text](https://raw.githubusercontent.com/s-bose7/csv-uploader/master/docs/database_schema.png)
-
+![database_schema](docs/database_schema.png)
 
 
 # Creating and upgrading a new migration
