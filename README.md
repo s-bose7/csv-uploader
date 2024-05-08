@@ -30,3 +30,15 @@ $ alembic current
 $ alembic downgrade -1  # Downgrade one revision
 ```
 
+# Development checklist
+
+- [x] Create database schema  
+- [x] Create the migrations  
+- [ ] Read and validate data  
+- [ ] Make insertions
+
+- [ ] Add indexes to tables  
+- [ ] Add logging  
+- [ ] Add configurations  
+- [ ] Dockerize application  
+- [ ] Batch insertions for better performance when dealing with large datasets (bulk insert methods or wrap the entire process in a transaction)
