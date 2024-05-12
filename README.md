@@ -1,6 +1,6 @@
 # Database Schema
 
-For more details on the schema [see here.](docs/schema.md) 
+For more details on the schema [see here](docs/schema.md). For more details on alembic take a look at the official [documentation](https://alembic.sqlalchemy.org/en/latest/tutorial.html).
 
 ![database_schema](docs/database_schema.png)
 
@@ -10,7 +10,7 @@ For more details on the schema [see here.](docs/schema.md)
 ### Create a new migration file for a new database schema:
 
 ```bash
-$ alembic revision --autogenerate -m "schema updated"
+$ alembic revision -m "schema updated"
 ```
 
 ### To apply the schema migration and create the database tables:
@@ -39,7 +39,8 @@ $ alembic downgrade -1  # Downgrade one revision
 - [ ] Add indexes to tables 
 - [ ] Add logging 
 - [ ] Add configurations 
-- [ ] Dockerize application 
+- [ ] Dockerize application
+- [ ] Deploy to aws (live database) 
 - [ ] Batch insertions for better performance when dealing with large datasets (bulk insert methods or wrap the entire process in a transaction)
 
 
