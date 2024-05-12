@@ -16,7 +16,6 @@
 - state (VARCHAR)
 - zip (VARCHAR)
 - slug (VARCHAR)
-- category (VARCHAR)
 - custom_fields (JSONB) # PostgreSQL JSON data type
 - irs_ein (VARCHAR)
 - irs_ntee_code (VARCHAR)

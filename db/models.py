@@ -41,7 +41,6 @@ class Organizations(Base):
     state = Column(String)
     zip = Column(String)
     slug = Column(String)
-    category = Column(String)
     custom_fields = Column(JSON)
     irs_ein = Column(String)
     irs_ntee_code = Column(String)
@@ -119,9 +118,6 @@ class Contacts(Base):
     # A one-to-many relationship between the Contact and Club models,
     # where one Club can have multiple Contact instances.
     club = relationship('Clubs', backref='contacts')
-    # A one-to-one relationship between the Contact and Agent models,
-    # where one agent can have at most one Contact instance. 
-    agent = relationship('Agents', backref='contacts', uselist=False)
 
     def __repr__(self):
         return f"Contact(id={self.id}, email='{self.email}', first_name='{self.first_name}', position='{self.position}')"
