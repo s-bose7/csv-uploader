@@ -4,7 +4,7 @@
 import pandas as pd
 from pandas import DataFrame
 
-from utils.validators import Validator
+from validators import Validator
 
 
 def read_file(file_path: str, file_type="csv")->DataFrame:
@@ -25,5 +25,44 @@ def read_file(file_path: str, file_type="csv")->DataFrame:
 
 
 def validate_data(raw_input: DataFrame)->DataFrame:
-    return raw_input
     
+    expected_columns = {
+        "segment": ["organization_category"],
+        "organization": [
+            "organization_name",
+            "address",
+            "g_lat",
+            "g_long",
+            "g_city",
+            "g_state",
+            "g_zip",
+            "irs_ein",
+            "irs_ntee_code",
+            "school_grade",
+            # geom,
+            # fall_start_date,
+            # winter_start_date
+        ],
+        "club": ["club_name"],
+        "contact": [
+            "contact_name",
+            "contact_email",
+            "contact_source",
+            "contact_position",
+        ],
+    }
+
+    missing_columns = []
+    for table, columns in expected_columns.items():
+        for col in columns:
+            if col not in raw_input.columns:
+                missing_columns.append(f"{table}.{col}")
+
+    if missing_columns:
+        message = (
+            f"The following expected columns are missing from the input DataFrame:\n"
+            f"{', '.join(missing_columns)}"
+        )
+        raise ValueError(message)
+
+    return raw_input
