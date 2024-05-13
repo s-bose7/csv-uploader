@@ -1,4 +1,6 @@
 # Orchestrate the data migration process.
+import sys
+import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -6,8 +8,8 @@ from db.models import (
     Segments,
     Organizations,
     Clubs,
-    Agents,
     Contacts,
+    Agents
 )
 
 from utils.csv_utils import read_file, validate_data
@@ -22,7 +24,11 @@ FILE_PATH = "data/csv_files/test.csv"
 # read raw input
 data = read_file(file_path=FILE_PATH)
 # transform and validate raw input
-validated_data = validate_data(data)
+try:
+    validated_data = validate_data(data)
+except ValueError as e:
+    logging.error(str(e))
+    sys.exit(1)
 
 # connect to database engine
 engine = create_engine(f"postgresql://{IMAGE_NAME}:{PASSWORD}@{HOST}:{PORT}/{DATABASE_NAME}")
@@ -32,9 +38,10 @@ session = Session()
 # insert data
 for index, row in validated_data.iterrows():
     
+    # filter segment by name if it exist
     segment = session.query(Segments).filter_by(name=row['organization_category']).first()
     if segment is None:
-        # Create a Segment instance
+        # create a segment instance
         segment = Segments(name=row['organization_category'])
         session.add(segment)
         session.commit()
@@ -50,7 +57,7 @@ for index, row in validated_data.iterrows():
     ).first()
     
     if organization is None:
-        # create an Organization instance
+        # create an organization instance
         organization = Organizations (
             name=row['organization_name'],
             segment_id=segment.id,
@@ -65,6 +72,8 @@ for index, row in validated_data.iterrows():
             irs_ein = row["irs_ein"],
             irs_ntee_code=row["irs_ntee_code"],
             school_grade=row["school_grade"],
+            # deprecated columns
+            # geom=row["geom"],
             # fall_start_date=row["fall_start_date"],
             # winter_start_date=row["winter_start_date"],
         )
@@ -81,7 +90,7 @@ for index, row in validated_data.iterrows():
         ).first()
         
         if club is None:
-            # create a Club instance
+            # create a club instance
             club = Clubs(name=row['club_name'], organization_id=organization.id)
             session.add(club)
             session.commit()
@@ -95,11 +104,12 @@ for index, row in validated_data.iterrows():
     ).first()
 
     if contact is None:
-        # create a Contact instance
+        # create a contact instance
         contact = Contacts (
             email=row['contact_email'],
             organization_id=organization.id,
             # set other contact fields
+            first_name = row["contact_name"],
             source=row["contact_source"],
             position=row["contact_position"]
         )
@@ -118,7 +128,7 @@ for index, row in validated_data.iterrows():
     ).first()
 
     if agent is None:
-        # create an Agent instance
+        # create an agent instance
         agent = Agents (
             rank=row['agent_rank'],
             contact_id=contact.id,
@@ -136,4 +146,4 @@ for index, row in validated_data.iterrows():
 # close connection
 session.close()
 engine.dispose()
-exit(0)
+sys.exit(0)
