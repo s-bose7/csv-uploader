@@ -4,7 +4,7 @@
 import pandas as pd
 from pandas import DataFrame
 
-from validators import Validator
+from utils.validators import Validator
 
 
 def read_file(file_path: str, file_type="csv")->DataFrame:
