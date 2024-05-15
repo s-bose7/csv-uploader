@@ -1,4 +1,5 @@
 # Orchestrate the data migration process.
+import os
 import sys
 import logging
 from sqlalchemy import create_engine
@@ -12,26 +13,31 @@ from db.models import (
     Agents
 )
 
+from config import db_config
 from utils.csv_utils import read_file, validate_data
 
-HOST = "localhost"
-PORT = 5432
-IMAGE_NAME = "postgres"
-PASSWORD = "bose1234"
-DATABASE_NAME = "group_contacts"
-FILE_PATH = "data/csv_files/test.csv"
-
 # read raw input
+FILE_PATH = "data/csv_files/test.csv"
 data = read_file(file_path=FILE_PATH)
-# transform and validate raw input
+if data == None: sys.exit(1)
+
 try:
+    # transform and validate raw input
     validated_data = validate_data(data)
 except ValueError as e:
     logging.error(str(e))
     sys.exit(1)
 
-# connect to database engine
-engine = create_engine(f"postgresql://{IMAGE_NAME}:{PASSWORD}@{HOST}:{PORT}/{DATABASE_NAME}")
+try:
+    ENV = sys.argv[1] if len(sys.argv) > 1 else "development"
+    DATABASE_URL = db_config.get_database_url(environment=ENV)
+    # connect to database engine
+    engine = create_engine(DATABASE_URL)
+except Exception as e:
+    logging.error(e)
+    sys.exit(1)
+
+# create a new session with the database
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -147,3 +153,7 @@ for index, row in validated_data.iterrows():
 session.close()
 engine.dispose()
 sys.exit(0)
+
+# heroku - create db with appropriate permissions
+# config, local migrations
+# set up deployments when you push changes to github
