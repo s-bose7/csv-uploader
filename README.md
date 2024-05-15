@@ -4,19 +4,6 @@
 
 For more details on the schema [see here](docs/schema.md). 
 
-# Development checklist
-
-- [x] Create database schema 
-- [x] Create the migrations 
-- [x] Read and validate data 
-- [x] Make insertions
-- [ ] Add indexes to tables 
-- [ ] Add logging 
-- [x] Add configurations 
-- [ ] Dockerize application
-- [x] Deploy to heroku 
-- [ ] Batch insertions for better performance when dealing with large datasets (bulk insert methods or wrap the entire process in a transaction)
-
 # Development Environment Setup
 ### 1. Clone the Repository
 
@@ -89,5 +76,17 @@ python3 main.py -production  # Use '-development' for development
 # Additional Notes:
 
 The -production flag is used for production environment. Use -development for local development.  
-
 The project uses Alembic for migrations. Refer to the official [documentation](https://alembic.sqlalchemy.org/en/latest/tutorial.html) for advanced usage.
+
+# Development checklist
+
+- [x] Create database schema 
+- [x] Create the migrations 
+- [x] Read and validate data 
+- [x] Make insertions
+- [ ] Add indexes to tables 
+- [ ] Add logging 
+- [x] Add configurations 
+- [ ] Dockerize application
+- [x] Deploy to heroku 
+- [ ] Batch insertions for better performance when dealing with large datasets (bulk insert methods or wrap the entire process in a transaction)
