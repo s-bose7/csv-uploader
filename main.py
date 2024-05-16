@@ -1,5 +1,4 @@
 # Orchestrate the data migration process.
-import os
 import sys
 import logging
 from sqlalchemy import create_engine
@@ -19,7 +18,8 @@ from utils.csv_utils import read_file, validate_data
 # read raw input
 FILE_PATH = "data/csv_files/test.csv"
 data = read_file(file_path=FILE_PATH)
-if data == None: sys.exit(1)
+if data.empty:
+    sys.exit(1)
 
 try:
     # transform and validate raw input
@@ -29,7 +29,7 @@ except ValueError as e:
     sys.exit(1)
 
 try:
-    ENV = sys.argv[1] if len(sys.argv) > 1 else "development"
+    ENV = sys.argv[1] if len(sys.argv) > 1 else "-development"
     DATABASE_URL = db_config.get_database_url(environment=ENV)
     # connect to database engine
     engine = create_engine(DATABASE_URL)
@@ -154,6 +154,5 @@ session.close()
 engine.dispose()
 sys.exit(0)
 
-# heroku - create db with appropriate permissions
-# config, local migrations
-# set up deployments when you push changes to github
+# prod db appropriate permissions
+# geom column fix in organization table
