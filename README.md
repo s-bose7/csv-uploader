@@ -63,8 +63,10 @@ Refer to this separate [guide](docs/guide.md) for instructions on starting the d
 `run_migrations.py` handles database schema changes through Alembic migrations. Execute this first:
 
 ```bash
-python3 run_migrations.py -production  # Use '-development' for development
+python3 run_migrations.py -production -new  # Use '-development' for development
 ```
+`-new` flag is to indicate that there's been some changes in the original database schema, so alembic needs to create new migrations accordingly. So only pass this flag if you changed the original schema otherwise leave blank. 
+
 ### 2. Uploading Data:
 
 `main.py` uploads data from your CSV files. Run it only after migrations:
