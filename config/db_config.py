@@ -8,7 +8,7 @@ def get_database_url(environment: str)->str:
     load_dotenv()
 
     # Read the database credentials based on the environment
-    if environment == "production":
+    if environment.lstrip('-') == "production":
         DB_HOST = os.getenv("PROD_DB_HOST")
         DB_PORT = os.getenv("PROD_DB_PORT")
         DB_NAME = os.getenv("PROD_DB_NAME")
