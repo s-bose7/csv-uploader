@@ -45,8 +45,6 @@ class Organizations(Base):
     irs_ein = Column(String)
     irs_ntee_code = Column(String)
     school_grade = Column(String)
-    fall_start_date = Column(DateTime)
-    winter_start_date = Column(DateTime)
 
     # A one-to-many relationship between the Organization and Segment models, 
     # where one Segment can have multiple Organization instances.
