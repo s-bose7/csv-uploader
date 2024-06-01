@@ -3,3 +3,4 @@ data/csv_files/
 data/excel_files/   
 old_scripts/
 .env
+__pycache__/
