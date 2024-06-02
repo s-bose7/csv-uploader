@@ -4,6 +4,9 @@
 import pandas as pd
 from pandas import DataFrame
 
+from typing import Dict, List
+from collections import deque
+from db.db_utils import generate_slug
 from utils.validators import Validator
 
 
@@ -24,8 +27,35 @@ def read_file(file_path: str, file_type="csv")->DataFrame:
     return df
 
 
-def validate_data(raw_input: DataFrame)->DataFrame:
+def compute_agent_rank(raw_input: DataFrame)->DataFrame:
+    if 'agent_rank' not in raw_input.columns:
+        raw_input['agent_rank'] = None
     
+    # Initialize dictionary to maintain organization email queues
+    org_email_dict: Dict[str, List[str]] = {}
+    for _, row in raw_input.iterrows():
+        slug = generate_slug(row["organization_name"], row["address"])
+        if slug not in org_email_dict:
+            org_email_dict[slug] = deque(maxlen=3)
+
+        org_email_dict[slug].appendleft(row["contact_email"])    
+
+    for indx, row in raw_input.iterrows():
+        slug = generate_slug(row["organization_name"], row["address"])
+        raw_input.at[indx, 'agent_rank'] = org_email_dict[slug].index(row["contact_email"]) + 1
+
+    return raw_input
+
+
+def compute_geom(raw_input: DataFrame)->DataFrame:
+    if "geom" not in raw_input.columns:
+        raw_input["geom"] = None
+    
+    return raw_input
+
+
+def validate_data(raw_input: DataFrame)->DataFrame:
+
     expected_columns = {
         "segment": ["organization_category"],
         "organization": [
@@ -36,19 +66,19 @@ def validate_data(raw_input: DataFrame)->DataFrame:
             "g_city",
             "g_state",
             "g_zip",
-            "irs_ein",
-            "irs_ntee_code",
-            "school_grade",
-            # geom,
+            # "geom",
+            # "irs_ein",
+            # "irs_ntee_code",
+            # "school_grade",
             # fall_start_date,
             # winter_start_date
         ],
         "club": ["club_name"],
         "contact": [
-            "contact_name",
             "contact_email",
-            "contact_source",
-            "contact_position",
+            # "contact_name",
+            # "contact_source",
+            # "contact_position",
         ],
     }
 
@@ -65,4 +95,8 @@ def validate_data(raw_input: DataFrame)->DataFrame:
         )
         raise ValueError(message)
 
-    return raw_input
+    return add_geom_and_agent_rank_columns(raw_input)
+
+
+def add_geom_and_agent_rank_columns(raw_input: DataFrame)->DataFrame:
+    return compute_agent_rank(compute_geom(raw_input))
