@@ -4,11 +4,16 @@ import logging
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from shapely.geometry import Point
+from geoalchemy2.shape import from_shape
 
 from config import db_config
+
 from utils.csv_utils import read_file, validate_data
+
 from db.db_utils import generate_slug
 from db.models import Segments, Organizations, Clubs, Contacts, Agents
+
 
 # read raw input
 FILE_PATH = "data/csv_files/test_new_agent_rank_logic.csv"
@@ -69,15 +74,21 @@ for index, row in validated_data.iterrows():
             state=row['g_state'],
             zip=row['g_zip'],
             slug=slug,
-            # set other org fields
-            irs_ein = row["irs_ein"],
-            irs_ntee_code=row["irs_ntee_code"],
-            school_grade=row["school_grade"],
-            # deprecated columns
-            # geom=row["geom"],
+            # set custom_fields
+            # irs_ein = row["irs_ein"],
+            # irs_ntee_code=row["irs_ntee_code"],
+            # school_grade=row["school_grade"],
             # fall_start_date=row["fall_start_date"],
             # winter_start_date=row["winter_start_date"],
         )
+        if organization.latitude and organization.longitude:
+            organization.geom = from_shape(
+                Point(
+                    organization.longitude, 
+                    organization.latitude
+                ), srid=4326
+            )
+
         session.add(organization)
         session.commit()
         print(organization.__repr__)
@@ -171,4 +182,3 @@ engine.dispose()
 sys.exit(0)
 
 # prod db appropriate permissions
-# geom column fix in organization table
