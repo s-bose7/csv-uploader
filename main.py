@@ -10,6 +10,9 @@ from utils.csv_utils import read_file, validate_data
 from db.db_utils import generate_slug, remove_outdated_emails_from_agents
 from db.models import Segments, Organizations, Clubs, Contacts, Agents
 
+from shapely.geometry import Point
+from geoalchemy2.shape import from_shape
+
 
 # read raw input
 FILE_PATH = "data/csv_files/test_new_agent_rank_logic.csv"
@@ -78,14 +81,12 @@ for index, row in validated_data.iterrows():
             # winter_start_date=row["winter_start_date"],
         )
 
-        # Add geom to organizations
-        # if organization.latitude and organization.longitude:
-            # organization.geom = from_shape(
-            #     Point(
-            #         organization.longitude, 
-            #         organization.latitude
-            #     ), srid=4326
-            # )
+        # Add geom to organizations only if both lat and long exist
+        if row['g_lat'] and row['g_long']:
+            organization.geom = from_shape(
+                Point(row['g_lat'], row['g_long']), 
+                srid=4326
+            )
 
         session.add(organization)
         session.commit()
@@ -181,3 +182,4 @@ engine.dispose()
 sys.exit(0)
 
 # prod db appropriate permissions
+# custom fields

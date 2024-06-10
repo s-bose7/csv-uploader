@@ -38,7 +38,7 @@ class Organizations(Base):
     street_address = Column(String)
     latitude = Column(Float)
     longitude = Column(Float)
-    # geom = Column(Geometry(geometry_type='POINT', srid=4326))
+    geom = Column(Geometry(geometry_type='POINT', srid=4326))
     city = Column(String)
     state = Column(String)
     zip = Column(String)
