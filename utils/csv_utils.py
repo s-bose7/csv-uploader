@@ -3,20 +3,15 @@
 
 import pandas as pd
 from pandas import DataFrame
-
-from typing import Dict, List
-from collections import deque
-from db.db_utils import generate_slug
 from utils.validators import Validator
 
+from shapely.geometry import Point
+from geoalchemy2.shape import from_shape
 
-def read_file(file_path: str, file_type="csv")->DataFrame:
+
+def read_file(file_path: str)->DataFrame:
     try:
-        if file_type == "csv":
-            df = pd.read_csv(file_path)
-        else:
-            df = pd.read_excel(file_path)
-
+        df = pd.read_csv(file_path)
     except FileNotFoundError:
         print(f"Error: File '{file_path}' not found.")
         return None
@@ -27,29 +22,18 @@ def read_file(file_path: str, file_type="csv")->DataFrame:
     return df
 
 
-def compute_agent_rank(raw_input: DataFrame)->DataFrame:
-    if 'agent_rank' not in raw_input.columns:
-        raw_input['agent_rank'] = None
-    
-    # Initialize dictionary to maintain organization email queues
-    org_email_dict: Dict[str, List[str]] = {}
-    for _, row in raw_input.iterrows():
-        slug = generate_slug(row["organization_name"], row["address"])
-        if slug not in org_email_dict:
-            org_email_dict[slug] = deque(maxlen=3)
-
-        org_email_dict[slug].appendleft(row["contact_email"])    
-
-    for indx, row in raw_input.iterrows():
-        slug = generate_slug(row["organization_name"], row["address"])
-        raw_input.at[indx, 'agent_rank'] = org_email_dict[slug].index(row["contact_email"]) + 1
-
-    return raw_input
-
-
 def compute_geom(raw_input: DataFrame)->DataFrame:
     if "geom" not in raw_input.columns:
         raw_input["geom"] = None
+        
+    # Add geom to organizations only if both lat and long exist
+    for idx, row in raw_input.iterrows():
+        if pd.notnull(row['g_lat']) and pd.notnull(row['g_long']):
+            geom = from_shape(
+                Point(row['g_long'], row['g_lat']), 
+                srid=4326
+            )
+            raw_input.at[idx, "geom"] = geom
     
     return raw_input
 
@@ -95,8 +79,8 @@ def validate_data(raw_input: DataFrame)->DataFrame:
         )
         raise ValueError(message)
 
-    return add_geom_and_agent_rank_columns(raw_input)
+    return compute_geom(validate_data_types(raw_input))
 
 
-def add_geom_and_agent_rank_columns(raw_input: DataFrame)->DataFrame:
-    return compute_agent_rank(compute_geom(raw_input))
+def validate_data_types(raw_input: DataFrame)->DataFrame:
+    return raw_input
