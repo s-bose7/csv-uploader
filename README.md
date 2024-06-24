@@ -27,13 +27,18 @@ Install dependencies listed in requirements.txt:
 $ pip install -r requirements.txt
 ```
 Create a data directory to store your CSV files for upload.
-Create a .env file in the project root for environment variables.
 ```bash
 $ mkdir data
-$ touch .env
+```
+Create the migration environment:
+```bash
+$ alembic init migrations # This will create a dir migrations in project root with an alembic.ini file
 ```
 ### 3. Environment Variables (.env)
-
+Create a .env file in the project root for environment variables:
+```bash
+$ touch .env
+```
 Populate the .env file with the following variables, replacing the placeholders with your actual credentials:
 ```bash
 DEV_DB_USER=postgres
@@ -82,13 +87,12 @@ The project uses Alembic for migrations. Refer to the official [documentation](h
 
 # Development checklist
 
-- [x] Create database schema 
+- [x] Create database schema
+- [x] Add configurations  
 - [x] Create the migrations 
 - [x] Read and validate data 
-- [x] Make insertions
+- [x] Make insertions  
 - [ ] Add indexes to tables 
 - [ ] Add logging 
-- [x] Add configurations 
-- [ ] Dockerize application
 - [x] Deploy to heroku 
-- [ ] Batch insertions for better performance when dealing with large datasets (bulk insert methods or wrap the entire process in a transaction)
+- [ ] Batch insertions for better performance.
