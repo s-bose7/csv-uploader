@@ -4,3 +4,4 @@ data/excel_files/
 old_scripts/
 .env
 __pycache__/
+alembic.ini
