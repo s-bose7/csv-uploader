@@ -39,39 +39,7 @@ def compute_geom(raw_input: DataFrame)->DataFrame:
 
 
 def validate_data(raw_input: DataFrame)->DataFrame:
-
-    expected_columns = {
-        "segment": ["organization_category"],
-        "organization": [
-            "organization_name",
-            "address",
-            "g_lat",
-            "g_long",
-            "g_city",
-            "g_state",
-            "g_zip",
-            # "geom",
-            # "irs_ein",
-            # "irs_ntee_code",
-            # "school_grade",
-            # fall_start_date,
-            # winter_start_date
-        ],
-        "club": ["club_name"],
-        "contact": [
-            "contact_email",
-            # "contact_name",
-            # "contact_source",
-            # "contact_position",
-        ],
-    }
-
-    missing_columns = []
-    for table, columns in expected_columns.items():
-        for col in columns:
-            if col not in raw_input.columns:
-                missing_columns.append(f"{table}.{col}")
-
+    missing_columns = Validator.is_missing_columns(raw_input)
     if missing_columns:
         message = (
             f"The following expected columns are missing from the input DataFrame:\n"
@@ -79,8 +47,19 @@ def validate_data(raw_input: DataFrame)->DataFrame:
         )
         raise ValueError(message)
 
-    return compute_geom(validate_data_types(raw_input))
+    raw_input_validated_types = Validator.validate_data_types(raw_input)
+    return compute_geom(Validator.drop_duplicates(raw_input_validated_types))
 
 
-def validate_data_types(raw_input: DataFrame)->DataFrame:
-    return raw_input
+def sanitize_json(data):
+    """
+    Recursively sanitize JSON data, converting NaN values to None.
+    """
+    if isinstance(data, dict):
+        return {k: sanitize_json(v) for k, v in data.items()}
+    elif isinstance(data, list):
+        return [sanitize_json(i) for i in data]
+    elif pd.isna(data):
+        return None
+    else:
+        return data
