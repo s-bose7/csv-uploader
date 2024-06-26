@@ -1,6 +1,6 @@
 # This module should contain functions for reading, parsing, and transforming CSV files 
 # before uploading the data to the database.
-
+import csv
 import pandas as pd
 from pandas import DataFrame
 from utils.validators import Validator
@@ -63,3 +63,24 @@ def sanitize_json(data):
         return None
     else:
         return data
+    
+
+def export_upload_stat()->None:
+    columns = [
+        "upload_environment",
+        "date",
+        "file_name",
+        "file_size",
+        "rows_count",
+        "segments_uploaded",
+        "segments_upload_time",
+        "organizations_uploaded",
+        "organizations_upload_time",
+        "clubs_uploaded",
+        "clubs_upload_time",
+        "contacts_uploaded",
+        "contacts_upload_time",
+        "agents_uploaded",
+        "agents_upload_time",
+        "total_time_in_seconds"
+    ]
