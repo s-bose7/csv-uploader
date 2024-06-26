@@ -95,4 +95,4 @@ The project uses Alembic for migrations. Refer to the official [documentation](h
 - [ ] Add indexes to tables 
 - [ ] Add logging 
 - [x] Deploy to heroku 
-- [ ] Batch insertions for better performance.
+- [x] Batch insertions for better performance.
