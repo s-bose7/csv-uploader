@@ -1,8 +1,9 @@
-# Database Schema
 
 This is a migration tool, responsible for uploading massive CSVs to a centralised database. The database can be accessed remotely by teams with the right set of credentials. 
 This repository contains the database physical schema creation, and uploading passed CSV 
 files to appropriate tables. 
+
+# Database Schema
 
 ![database_schema](docs/database_schema.png)
 
