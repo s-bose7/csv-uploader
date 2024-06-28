@@ -33,7 +33,7 @@ class Organizations(Base):
     id = Column(Integer, primary_key=True)
     segment_id = Column(Integer, ForeignKey('segments.id'), nullable=False)
     name = Column(String)
-    created_at = Column(DateTime, server_default=func.now())
+    created_at = Column(DateTime)
     updated_at = Column(DateTime, onupdate=func.now())
     street_address = Column(String)
     latitude = Column(Float)
