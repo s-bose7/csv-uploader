@@ -85,7 +85,7 @@ python3 run_migrations.py -production -new  # Use '-development' for development
 python3 main.py -production  # Use '-development' for development
 ```
 
-# Additional Notes:
+### Additional Notes:
 
 The -production flag is used for production environment. Use -development for local development.  
 The project uses Alembic for migrations. Refer to the official [documentation](https://alembic.sqlalchemy.org/en/latest/tutorial.html) for advanced usage.
