@@ -30,17 +30,23 @@ with open("alembic.ini", "w") as config_file:
 # Initialize the Alembic configuration
 alembic_cfg = Config("alembic.ini")
 
-# Check if there are new migrations
 script = ScriptDirectory.from_config(alembic_cfg)
 heads = script.get_heads()
 
+# Check if there are new migrations
 if new_migrations:
     revision_message = input("Enter a message for the new revision: ")
     # Run the Alembic revision command with --autogenerate
     print(f"ENVIRONMENT: {ENV}, Running Alembic revisions...")
     command.revision(alembic_cfg, autogenerate=True, message=revision_message)
-    command.upgrade(alembic_cfg, "head")
-    print("Migrations completed successfully.")
+    # Prompt user to confirm upgrade
+    upgrade_trigger = input("Alembic autogeneration done.\nEnter Y to move forward with database schema upgrade (Y/N): ")
+
+    if upgrade_trigger.upper() == 'Y':
+        command.upgrade(alembic_cfg, "head")
+        print("Migrations completed successfully.")
+    else:
+        print("Upgrade cancelled. No changes applied.")
 
 elif heads:
     # There are pending migrations, run the upgrade command
