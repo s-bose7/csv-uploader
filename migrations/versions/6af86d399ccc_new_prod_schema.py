@@ -19,6 +19,36 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    # PL/SQL function to autogenerate slug
+    op.execute("""
+        CREATE OR REPLACE FUNCTION generate_slug(name TEXT, address TEXT)
+        RETURNS TEXT AS $$
+        BEGIN
+            RETURN regexp_replace(lower(trim(both ' ' FROM name || ' ' || address)), '[^a-z0-9]+', '-', 'g');
+        END;
+        $$ LANGUAGE plpgsql;
+    """)
+    # PL/SQL function to autoupdate slug
+    op.execute("""
+        CREATE OR REPLACE FUNCTION update_slug_trigger_function()
+        RETURNS TRIGGER AS $$
+        BEGIN
+            -- Check if the name or street_address has changed
+            IF NEW.name IS DISTINCT FROM OLD.name OR NEW.street_address IS DISTINCT FROM OLD.street_address THEN
+                -- Update the slug column using the generate_slug function
+                NEW.slug := generate_slug(NEW.name, NEW.street_address);
+            END IF;
+            RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+    """)
+    # PL/SQL trigger to autoupdate slug upon changes in organization name or street_address 
+    op.execute("""
+        CREATE TRIGGER update_slug_trigger
+        BEFORE UPDATE ON organizations
+        FOR EACH ROW
+        EXECUTE FUNCTION update_slug_trigger_function();
+    """)
     # PL/SQL function to autogenerate agents upon new contact insertion.
     op.execute("""
         CREATE OR REPLACE FUNCTION create_agent()
