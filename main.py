@@ -17,7 +17,7 @@ from utils.csv_utils import read_file, validate_data, sanitize_json
 
 
 # Read raw input
-FILE_PATH = "data/csv_files/group_contacts.csv"
+FILE_PATH = "data/csv_files/test_queries.csv"
 data = read_file(file_path=FILE_PATH)
 if data.empty:
     sys.exit(1)
@@ -141,6 +141,10 @@ for index, row in validated_data.iterrows():
                 contact.club_id = club.id
             
             add_and_commit(session, contact)
+        else:
+            # If club exist for this contact and contact already exist in database
+            if club is not None: 
+                contact.club_id = club.id
             
 
 remove_outdated_emails_from_agents(session)
@@ -149,7 +153,3 @@ remove_outdated_emails_from_agents(session)
 session.close()
 engine.dispose()
 sys.exit(0)
-
-
-# Test cases
-# Bulk upload
