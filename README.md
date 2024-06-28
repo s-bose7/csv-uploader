@@ -1,5 +1,9 @@
 # Database Schema
 
+This is a migration tool, responsible for uploading massive CSVs to a centralised database. The database can be accessed remotely by teams with the right set of credentials. 
+This repository contains the database physical schema creation, and uploading passed CSV 
+files to appropriate tables. 
+
 ![database_schema](docs/database_schema.png)
 
 For more details on the schema [see here](docs/schema.md). 
@@ -28,7 +32,7 @@ $ pip install -r requirements.txt
 ```
 Create a data directory to store your CSV files for upload.
 ```bash
-$ mkdir data
+$ mkdir data  # UNIX
 ```
 Create the migration environment:
 ```bash
@@ -37,7 +41,7 @@ $ alembic init migrations # This will create a dir migrations in project root wi
 ### 3. Environment Variables (.env)
 Create a .env file in the project root for environment variables:
 ```bash
-$ touch .env
+$ touch .env # UNIX
 ```
 Populate the .env file with the following variables, replacing the placeholders with your actual credentials:
 ```bash
@@ -84,6 +88,10 @@ python3 main.py -production  # Use '-development' for development
 
 The -production flag is used for production environment. Use -development for local development.  
 The project uses Alembic for migrations. Refer to the official [documentation](https://alembic.sqlalchemy.org/en/latest/tutorial.html) for advanced usage.
+
+# Data Integrity checks
+Data integrity checks are important to verify the core database insertion logic.
+Refer [here](docs/tests.md) to see the kinds of checks being performed after inserting data. 
 
 # Development checklist
 
