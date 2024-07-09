@@ -12,12 +12,12 @@ from db.db_utils import generate_slug
 from db.db_utils import add_and_commit
 from db.db_utils import remove_outdated_emails_from_agents
 
-from db.models import Segments, Organizations, Clubs, Contacts
+from db.models import Organizations, Clubs, Contacts
 from utils.csv_utils import read_file, validate_data, sanitize_json
 
 
 # Read raw input
-FILE_PATH = "data/csv_files/test_queries.csv"
+FILE_PATH = "data/csv_files/group_contacts.csv"
 data = read_file(file_path=FILE_PATH)
 if data.empty:
     sys.exit(1)
@@ -47,29 +47,18 @@ session = Session()
 
 # Insert data
 for index, row in validated_data.iterrows():
-    
-    # Process segment
-    # Filter segment by name if it exist
-    segment = session.query(Segments).filter_by(name=row['segment_name']).first()
-    if segment is None:
-        # create a segment instance
-        segment = Segments(name=row['segment_name'])
-        add_and_commit(session, segment)
 
     # Process organization
     # Secondary identifier for organization
     slug = generate_slug(row['organization_name'], row['address'])
-    
     # Filter organization by slug and segment.id if it exist
-    organization = session.query(Organizations).filter_by(
-        slug=slug, 
-        segment_id=segment.id
-    ).first()
+    organization = session.query(Organizations).filter_by(slug=slug).first()
     
     if organization is None:
         # Create an organization instance
         organization = Organizations (
             name=row['organization_name'],
+            slug=slug,
             street_address=row['address'],
             latitude=row['g_lat'],
             longitude=row['g_long'],
@@ -79,9 +68,6 @@ for index, row in validated_data.iterrows():
             zip=row['g_zip'],
             category=row['organization_category'],
             custom_fields = {},
-            # Set foreign and composite keys
-            slug=slug,
-            segment_id=segment.id,
         )
         if row["created_at"]:
             organization.created_at = row["created_at"]
@@ -108,8 +94,8 @@ for index, row in validated_data.iterrows():
         if club is None:
             # Create a club instance
             club = Clubs(name=row['club_name'], organization_id=organization.id)
-            add_and_commit(session, club)   
-        
+            add_and_commit(session, club) 
+            
     # Process contacts
     # Filter contact by email and organization.id if it exist
     contact: Contacts = None

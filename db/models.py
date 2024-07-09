@@ -16,22 +16,10 @@ from geoalchemy2 import Geometry
 Base = declarative_base()
 
 
-class Segments(Base):
-    __tablename__ = 'segments'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    created_at = Column(DateTime, server_default=func.now())
-
-    def __repr__(self):
-        return f"Segments(id={self.id}, name='{self.name}', created_at='{self.created_at}')"
-
-
 class Organizations(Base):
     __tablename__ = 'organizations'
 
     id = Column(Integer, primary_key=True)
-    segment_id = Column(Integer, ForeignKey('segments.id'), nullable=False)
     name = Column(String)
     created_at = Column(DateTime)
     updated_at = Column(DateTime, onupdate=func.now())
@@ -46,12 +34,8 @@ class Organizations(Base):
     category = Column(String)
     custom_fields = Column(JSON, nullable=True)
 
-    # A one-to-many relationship between the Organization and Segment models, 
-    # where one Segment can have multiple Organization instances.
-    segment = relationship('Segments', backref='organizations')
-
     def __repr__(self):
-        return f"Organization(id={self.id}, name='{self.name}', segment_id={self.segment_id})"
+        return f"Organization(id={self.id}, name='{self.name}', category={self.category})"
     
 
 class Clubs(Base):
@@ -79,6 +63,7 @@ class Agents(Base):
     contact_id = Column(Integer, ForeignKey('contacts.id'), unique=True, nullable=False)
     organization_id = Column(Integer, ForeignKey('organizations.id'), nullable=False)
     rank = Column(Integer)
+    segment_name = Column(String)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
     # A one-to-many relationship between the Agent and Club models, 
@@ -92,7 +77,7 @@ class Agents(Base):
     organization = relationship('Organizations', backref='agents')
 
     def __repr__(self):
-        return f"Agent(id={self.id}, rank={self.rank}, club_id={self.club_id}, contact_id={self.contact_id}, organization_id={self.organization_id})"
+        return f"Agent(id={self.id}, rank={self.rank}, organization_id={self.organization_id})"
     
 
 class Contacts(Base):
