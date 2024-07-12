@@ -10,7 +10,6 @@ class Validator:
     def is_missing_columns(raw_input: DataFrame)->List[str]:
         missing_columns: List[str] = []
         required_columns: Dict[str, List[str]] = {
-            "segment": ["organization_category"],
             "organization": [
                 "organization_name",
                 "address",
@@ -19,6 +18,7 @@ class Validator:
                 "g_city",
                 "g_state",
                 "g_zip",
+                "organization_category"
             ],
             "club": ["club_name"],
             "contact": ["contact_email"]
