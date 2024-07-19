@@ -10,6 +10,7 @@ from sqlalchemy.orm import sessionmaker
 
 from db.db_utils import generate_slug
 from db.db_utils import add_and_commit
+from db.db_utils import remove_agents_with_higher_rank
 from db.db_utils import remove_outdated_emails_from_agents
 
 from db.models import Organizations, Clubs, Contacts
@@ -17,7 +18,7 @@ from utils.csv_utils import read_file, validate_data, sanitize_json
 
 
 # Read raw input
-FILE_PATH = "data/csv_files/group_contacts.csv"
+FILE_PATH = "data/csv_files/new_file.csv"
 data = read_file(file_path=FILE_PATH)
 if data.empty:
     sys.exit(1)
@@ -133,6 +134,7 @@ for index, row in validated_data.iterrows():
                 contact.club_id = club.id
             
 
+remove_agents_with_higher_rank(session)
 remove_outdated_emails_from_agents(session)
 
 # Close connection
