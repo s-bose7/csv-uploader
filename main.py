@@ -78,6 +78,8 @@ for index, row in validated_data.iterrows():
             organization.custom_fields["irs_ntee_code"] = row["irs_ntee_code"]
         if row["school_grade"]:
             organization.custom_fields["school_grade"] = row["school_grade"]
+        if row["charity_source"]:
+            organization.custom_fields["charity_source"] = row["charity_source"]
         
         organization.custom_fields = sanitize_json(organization.custom_fields)
 
