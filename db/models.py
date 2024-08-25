@@ -89,6 +89,7 @@ class Contacts(Base):
     club_id = Column(Integer, ForeignKey('clubs.id'))
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
+    project_source = Column(String, nullable=True)
     custom_fields = Column(JSON, nullable=True)
 
     # A one-to-many relationship between the Contact and Organization models,

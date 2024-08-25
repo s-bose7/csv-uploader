@@ -115,6 +115,11 @@ for index, row in validated_data.iterrows():
                 organization_id=organization.id,
                 custom_fields = {}
             )
+            
+            # Populate project source
+            if row["project_source"]:
+                contact.project_source = row["project_source"]
+
             # Populate custom fields
             if row["contact_name"]:
                 contact.custom_fields["name"] = row["contact_name"]
