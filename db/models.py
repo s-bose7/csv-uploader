@@ -10,6 +10,7 @@ from sqlalchemy import (
     TIMESTAMP,
     DateTime,
     ForeignKey,
+    Boolean
 )
 from geoalchemy2 import Geometry
 
@@ -90,6 +91,7 @@ class Contacts(Base):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
     project_source = Column(String, nullable=True)
+    marketability = Column(Boolean, nullable=True)
     custom_fields = Column(JSON, nullable=True)
 
     # A one-to-many relationship between the Contact and Organization models,

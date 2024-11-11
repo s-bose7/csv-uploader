@@ -1,6 +1,7 @@
 # Orchestrate the data migration process.
 import sys
 import logging
+import argparse
 import pandas as pd
 
 from config import db_config
@@ -18,8 +19,19 @@ from utils.csv_utils import read_file, validate_data, sanitize_json
 
 
 # Read raw input
-FILE_PATH = "data/csv_files/new_file.csv"
-data = read_file(file_path=FILE_PATH)
+# FILE_PATH = "data/csv_files/new_file.csv"
+# data = read_file(file_path=FILE_PATH)
+# Parse command-line arguments
+parser = argparse.ArgumentParser(description="Process a CSV file path.")
+parser.add_argument(
+    "--file_path",  
+    help="Path to the CSV file to be processed"
+)
+args = parser.parse_args()
+
+# Use the provided file path or default
+file_path = args.file_path
+data = read_file(file_path=file_path)
 if data.empty:
     sys.exit(1)
 
@@ -78,8 +90,10 @@ for index, row in validated_data.iterrows():
             organization.custom_fields["irs_ntee_code"] = row["irs_ntee_code"]
         if row["school_grade"]:
             organization.custom_fields["school_grade"] = row["school_grade"]
-        if row["charity_source"]:
-            organization.custom_fields["charity_source"] = row["charity_source"]
+        # if row["charity_source"]:
+        #     organization.custom_fields["charity_source"] = row["charity_source"]
+        if row["last_researched_at"]:
+            organization.custom_fields["last_researched_at"] = row["last_researched_at"]
         
         organization.custom_fields = sanitize_json(organization.custom_fields)
 
@@ -117,8 +131,8 @@ for index, row in validated_data.iterrows():
             )
             
             # Populate project source
-            if row["project_source"]:
-                contact.project_source = row["project_source"]
+            # if row["project_source"]:
+            #     contact.project_source = row["project_source"]
 
             # Populate custom fields
             if row["contact_name"]:
