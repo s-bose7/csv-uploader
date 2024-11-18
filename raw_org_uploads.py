@@ -1,3 +1,4 @@
+import csv
 import sys
 import logging
 
@@ -13,6 +14,12 @@ from db.models import Organizations
 from db.db_utils import generate_slug, add_and_commit
 
 
+def export_stats(data):
+    with open("raw_orgs_stats.csv", "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(data)
+
+export_stats(["id, slug"])
 FILE_PATH = "data/csv_files/raw_orgs - Sheet1.csv"
 data = read_file(file_path=FILE_PATH)
 
@@ -29,8 +36,12 @@ except Exception as e:
 Session = sessionmaker(bind=engine)
 session = Session()
 
-for index, row in data.iterrows():
+total = 0
+new_orgs = 0
 
+for index, row in data.iterrows():
+    
+    total += 1
     # Process organization
     # Secondary identifier for organization
     slug = generate_slug(row['organization_name'], row['organization_address'])
@@ -49,10 +60,13 @@ for index, row in data.iterrows():
             custom_fields = {},
         )
         organization.created_at = datetime.now()
-        if row["irs_ein"] and row["irs_ntee_code"]:
+        if row["irs_ein"] is not None and row["irs_ntee_code"] is not None:
             organization.custom_fields["irs_ein"] =  row["irs_ein"]
             organization.custom_fields["irs_ntee_code"] = row["irs_ntee_code"]
 
         add_and_commit(session, organization)
+        new_orgs += 1
+        export_stats([organization.id, organization.slug])
     
+export_stats([f"total_orgs={total}", f"new_orgs={new_orgs}"])
 print("\nProcess finished with exit code 0.")
