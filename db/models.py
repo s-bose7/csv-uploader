@@ -103,3 +103,24 @@ class Contacts(Base):
 
     def __repr__(self):
         return f"Contact(id={self.id}, email='{self.email}', organization_id={self.organization_id}')"
+
+
+class College(Base):
+    __tablename__ = "colleges"
+
+    id = Column(Integer, primary_key=True)
+    nces_data = Column(String)
+    last_researched_at = Column(String)
+    college_url = Column(String)
+    campuslabs = Column(Boolean)
+    has_clubs_to_collect = Column(Boolean)
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+
+    organization_id = Column(Integer, ForeignKey('organizations.id'), nullable=True)
+    # A one-to-many relationship between the College and Organization models, 
+    # where one Organization can have multiple College instances.
+    organization = relationship('Organizations', backref='colleges')
+
+    def __repr__(self):
+        return f"College(id={self.id}, organization_id={self.organization_id}')"
