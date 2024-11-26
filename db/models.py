@@ -114,9 +114,7 @@ class College(Base):
     college_url = Column(String)
     campuslabs = Column(Boolean)
     has_clubs_to_collect = Column(Boolean)
-    created_at = Column(DateTime, server_default=func.now())
-    updated_at = Column(DateTime, onupdate=func.now())
-
+    
     organization_id = Column(Integer, ForeignKey('organizations.id'), nullable=True)
     # A one-to-many relationship between the College and Organization models, 
     # where one Organization can have multiple College instances.
