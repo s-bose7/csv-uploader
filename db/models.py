@@ -7,7 +7,6 @@ from sqlalchemy import (
     Integer, 
     Float,
     String, 
-    TIMESTAMP,
     DateTime,
     ForeignKey,
     Boolean
@@ -34,6 +33,9 @@ class Organizations(Base):
     slug = Column(String, nullable=False)
     category = Column(String)
     custom_fields = Column(JSON, nullable=True)
+
+    raw_org_id = Column(String, nullable=True)
+    raw_org_type = Column(String, nullable=True)
 
     def __repr__(self):
         return f"Organization(id={self.id}, name='{self.name}', category={self.category})"
@@ -109,16 +111,54 @@ class College(Base):
     __tablename__ = "colleges"
 
     id = Column(Integer, primary_key=True)
-    nces_data = Column(String)
+    name = Column(String)
+    address = Column(String)
+    city = Column(String)
+    state = Column(String)
+    zip = Column(String)
     last_researched_at = Column(String)
-    college_url = Column(String)
+    url = Column(String)
     campuslabs = Column(Boolean)
     has_clubs_to_collect = Column(Boolean)
     
-    organization_id = Column(Integer, ForeignKey('organizations.id'), nullable=True)
-    # A one-to-many relationship between the College and Organization models, 
-    # where one Organization can have multiple College instances.
     organization = relationship('Organizations', backref='colleges')
 
     def __repr__(self):
-        return f"College(id={self.id}, organization_id={self.organization_id}')"
+        return f"College(id={self.id}, college_name={self.name}')"
+
+
+class School(Base):
+    __tablename__ = "schools"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    address = Column(String)
+    city = Column(String)
+    state = Column(String)
+    zip = Column(String)
+    last_researched_at = Column(String)
+    school_grade = Column(String)
+    
+    organization = relationship('Organizations', backref='schools')
+
+    def __repr__(self):
+        return f"School(id={self.id}, school_name={self.name}')"
+
+
+class Charitiy(Base):
+    __tablename__ = "charities"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    address = Column(String)
+    city = Column(String)
+    state = Column(String)
+    zip = Column(String)
+    irs_ein = Column(String)
+    ntee_code = Column(String)
+    last_researched_at = Column(String)
+    
+    organization = relationship('Organizations', backref='colleges')
+
+    def __repr__(self):
+        return f"Charitiy(id={self.id}, charity_name={self.name}')"
