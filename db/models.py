@@ -120,8 +120,6 @@ class College(Base):
     url = Column(String)
     campuslabs = Column(Boolean)
     has_clubs_to_collect = Column(Boolean)
-    
-    organization = relationship('Organizations', backref='colleges')
 
     def __repr__(self):
         return f"College(id={self.id}, college_name={self.name}')"
@@ -138,8 +136,6 @@ class School(Base):
     zip = Column(String)
     last_researched_at = Column(String)
     school_grade = Column(String)
-    
-    organization = relationship('Organizations', backref='schools')
 
     def __repr__(self):
         return f"School(id={self.id}, school_name={self.name}')"
@@ -158,7 +154,5 @@ class Charitiy(Base):
     ntee_code = Column(String)
     last_researched_at = Column(String)
     
-    organization = relationship('Organizations', backref='colleges')
-
     def __repr__(self):
         return f"Charitiy(id={self.id}, charity_name={self.name}')"

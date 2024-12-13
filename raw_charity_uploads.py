@@ -17,7 +17,7 @@ def export_stats(data):
         writer = csv.writer(f)
         writer.writerow(data)
 
-export_stats(["id, charity_name"])
+export_stats(["id", "charity_name"])
 FILE_PATH = "data/csv_files/" # pass file path here
 data = read_file(file_path=FILE_PATH)
 
@@ -66,6 +66,8 @@ for index, row in data.iterrows():
     if organization is not None:
         organization.raw_org_id = f"charity_{charity.id}"
         organization.raw_org_type = "charity"
+        charity.last_researched_at = organization.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+        add_and_commit(session, charity)
 
     
 export_stats([f"total_charity={total}", f"new_charity={new_orgs}"])

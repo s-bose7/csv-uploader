@@ -17,7 +17,7 @@ def export_stats(data):
         writer = csv.writer(f)
         writer.writerow(data)
 
-export_stats(["id, slug"])
+export_stats(["id", "slug"])
 FILE_PATH = "data/csv_files/" # pass file path here
 data = read_file(file_path=FILE_PATH)
 
@@ -56,7 +56,7 @@ for index, row in data.iterrows():
             campuslabs=row["campuslabs"],
             has_clubs_to_collect=row["has_clubs_to_collect"]
         )
-        
+
         add_and_commit(session, college)
         new_orgs += 1
         export_stats([college.id, college.url])
@@ -67,6 +67,8 @@ for index, row in data.iterrows():
     if organization is not None:
         organization.raw_org_id = f"college_{college.id}"
         organization.raw_org_type = "college"
+        college.last_researched_at = organization.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+        add_and_commit(session, college)
 
     
 export_stats([f"total_colleges={total}", f"new_colleges={new_orgs}"])
