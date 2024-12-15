@@ -65,7 +65,8 @@ for index, row in data.iterrows():
     if organization is not None:
         organization.raw_org_id = f"school_{school.id}"
         organization.raw_org_type = "school"
-        school.last_researched_at = organization.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+        # school.last_researched_at = organization.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+        add_and_commit(session, organization)
         add_and_commit(session, school)
 
     

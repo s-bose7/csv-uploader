@@ -18,7 +18,7 @@ def export_stats(data):
         writer.writerow(data)
 
 export_stats(["id", "slug"])
-FILE_PATH = "data/csv_files/" # pass file path here
+FILE_PATH = "data/csv_files/college_table_data.csv" # pass file path here
 data = read_file(file_path=FILE_PATH)
 
 try:
@@ -51,7 +51,6 @@ for index, row in data.iterrows():
             city=row["city"],
             state=row["state"],
             zip=row["zip"],
-            last_researched_at=row["last_researched_at"],
             url=row["url"],
             campuslabs=row["campuslabs"],
             has_clubs_to_collect=row["has_clubs_to_collect"]
@@ -67,9 +66,10 @@ for index, row in data.iterrows():
     if organization is not None:
         organization.raw_org_id = f"college_{college.id}"
         organization.raw_org_type = "college"
-        college.last_researched_at = organization.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+        # college.last_researched_at = organization.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+        add_and_commit(session,organization)
         add_and_commit(session, college)
-
+        
     
 export_stats([f"total_colleges={total}", f"new_colleges={new_orgs}"])
 print("\nProcess finished with exit code 0.")
